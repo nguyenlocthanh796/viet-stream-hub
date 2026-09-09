@@ -1,4 +1,4 @@
-// ponytail: web player mã nguồn mở Artplayer + Hls.js hỗ trợ đa phân giải, đa âm thanh và nạp phụ đề rời.
+// ponytail: web player mã nguồn mở Artplayer + Hls.js tối ưu Web, Mobile, Tablet, Android TV.
 const http = require('http');
 const { URL } = require('url');
 
@@ -70,52 +70,63 @@ const server = http.createServer((req, res) => {
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VietStream Hub · Open Engine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VietStream Hub · Open Universal Player</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    body { background: #0b0f19; color: #f1f5f9; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-    header { background: #111827; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1f2937; gap: 10px; flex-wrap: wrap; }
-    .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: #38bdf8; }
-    .tabs { display: flex; gap: 6px; }
-    .tab-btn { background: #1f2937; color: #94a3b8; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .15s; }
-    .tab-btn:hover { color: #f1f5f9; background: #374151; }
+    body { background: #0b0f19; color: #f1f5f9; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+    header { background: #111827; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1f2937; gap: 8px; flex-wrap: wrap; z-index: 30; }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #38bdf8; white-space: nowrap; }
+    .tabs { display: flex; gap: 4px; overflow-x: auto; max-width: 100%; padding-bottom: 2px; }
+    .tab-btn { background: #1f2937; color: #94a3b8; border: 1px solid transparent; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; white-space: nowrap; transition: all .15s; }
+    .tab-btn:hover, .tab-btn:focus { color: #f1f5f9; background: #374151; outline: 2px solid #38bdf8; }
     .tab-btn.active { background: #0284c7; color: #fff; font-weight: 600; }
     .controls-bar { display: flex; gap: 6px; align-items: center; }
     .custom-input { display: flex; gap: 4px; }
-    .custom-input input { width: 220px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 6px 10px; color: #f8fafc; font-size: 12px; outline: none; }
-    .custom-input button { background: #059669; border: none; border-radius: 6px; color: white; padding: 6px 12px; font-size: 12px; cursor: pointer; font-weight: 600; }
-    .sub-btn { background: #475569; border: none; border-radius: 6px; color: white; padding: 6px 12px; font-size: 12px; cursor: pointer; font-weight: 600; }
-    .sub-btn:hover { background: #64748b; }
-    .main { display: flex; flex: 1; height: calc(100vh - 54px); }
-    .sidebar { width: 280px; background: #111827; border-right: 1px solid #1f2937; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-    .sidebar h2 { font-size: 12px; text-transform: uppercase; color: #64748b; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .custom-input input { width: 180px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 5px 8px; color: #f8fafc; font-size: 11px; outline: none; }
+    .custom-input button, .sub-btn { background: #0284c7; border: none; border-radius: 6px; color: white; padding: 5px 10px; font-size: 11px; cursor: pointer; font-weight: 600; white-space: nowrap; }
+    .sub-btn { background: #475569; }
+    .sub-btn:hover, .sub-btn:focus { background: #64748b; outline: 2px solid #38bdf8; }
+
+    /* Layout Responsive: Desktop vs Mobile/Tablet */
+    .main { display: flex; flex: 1; height: calc(100vh - 50px); height: calc(100dvh - 50px); overflow: hidden; }
+    .sidebar { width: 260px; background: #111827; border-right: 1px solid #1f2937; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .sidebar h2 { font-size: 11px; text-transform: uppercase; color: #64748b; margin-bottom: 6px; letter-spacing: 0.5px; }
     .ep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-    .ep-btn { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; padding: 8px; border-radius: 6px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .15s; }
-    .ep-btn:hover { background: #334155; color: #fff; }
+    .ep-btn { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; padding: 8px; border-radius: 6px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 500; transition: all .15s; }
+    .ep-btn:hover, .ep-btn:focus { background: #334155; color: #fff; outline: 2px solid #38bdf8; }
     .ep-btn.active { background: #0284c7; border-color: #38bdf8; color: #fff; font-weight: 700; box-shadow: 0 0 10px rgba(2,132,199,0.5); }
-    .player-container { flex: 1; background: #000; position: relative; display: flex; align-items: center; justify-content: center; }
+    .player-container { flex: 1; background: #000; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     #artplayer-view { width: 100%; height: 100%; }
-    .quality-note { position: absolute; top: 12px; right: 12px; background: rgba(15,23,42,0.85); backdrop-filter: blur(4px); border: 1px solid #334155; color: #38bdf8; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; pointer-events: none; z-index: 20; }
+    .quality-note { position: absolute; top: 10px; right: 10px; background: rgba(15,23,42,0.85); backdrop-filter: blur(4px); border: 1px solid #334155; color: #38bdf8; padding: 3px 8px; border-radius: 9999px; font-size: 10px; font-weight: 600; pointer-events: none; z-index: 20; }
+
+    /* Giao diện Mobile / Tablet dọc */
+    @media (max-width: 768px) {
+      .main { flex-direction: column; }
+      .player-container { width: 100%; height: 38vh; min-height: 220px; flex: none; }
+      .sidebar { width: 100%; flex: 1; border-right: none; border-top: 1px solid #1f2937; }
+      .ep-grid { grid-template-columns: repeat(4, 1fr); }
+      .custom-input input { width: 120px; }
+    }
   </style>
 </head>
 <body>
   <header>
-    <div class="brand">VietStream · OpenEngine</div>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchSeries('gioi_mon_chi_ha')">Giới Môn Chi Hạ</button>
-      <button class="tab-btn" onclick="switchSeries('gia_thien')">Già Thiên</button>
-      <button class="tab-btn" onclick="switchSeries('ban_gai_thien_tai')">Bạn Gái Thiên Tài</button>
-      <button class="tab-btn" onclick="switchSeries('demo_multires')">Demo Multi-Res/Audio</button>
+    <div class="brand">VietStream · Universal</div>
+    <div class="tabs" id="tabs-list">
+      <button class="tab-btn active" tabindex="0" onclick="switchSeries('gioi_mon_chi_ha')">Giới Môn Chi Hạ</button>
+      <button class="tab-btn" tabindex="0" onclick="switchSeries('gia_thien')">Già Thiên</button>
+      <button class="tab-btn" tabindex="0" onclick="switchSeries('ban_gai_thien_tai')">Bạn Gái Thiên Tài</button>
+      <button class="tab-btn" tabindex="0" onclick="switchSeries('demo_multires')">Demo Multi-Res/Audio</button>
     </div>
     <div class="controls-bar">
       <input id="sub-file-input" type="file" accept=".vtt,.srt" style="display:none" onchange="handleSubFile(this)" />
-      <button class="sub-btn" onclick="document.getElementById('sub-file-input').click()">+ Nạp Sub Rời (.srt/.vtt)</button>
+      <button class="sub-btn" tabindex="0" onclick="document.getElementById('sub-file-input').click()">+ Sub Rời</button>
       <div class="custom-input">
         <input id="custom-url" type="text" placeholder="Dán link m3u8..." />
-        <button onclick="playCustomUrl()">Tải Stream</button>
+        <button tabindex="0" onclick="playCustomUrl()">Tải</button>
       </div>
     </div>
   </header>
@@ -160,7 +171,7 @@ const server = http.createServer((req, res) => {
               hlsInstance.loadSource(src);
               hlsInstance.attachMedia(video);
 
-              // 1. Tự động nhận diện danh sách độ phân giải (Resolution / Quality Switcher)
+              // 1. Phân giải (Resolution)
               hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
                 const levels = hlsInstance.levels;
                 const badge = document.getElementById('quality-badge');
@@ -186,7 +197,7 @@ const server = http.createServer((req, res) => {
                     onSelect: function (item) {
                       hlsInstance.currentLevel = item.level;
                       badge.innerText = item.html;
-                      artInstance.notice.show = 'Đã đổi chất lượng: ' + item.html;
+                      artInstance.notice.show = 'Chất lượng: ' + item.html;
                       return item.html;
                     }
                   });
@@ -202,7 +213,7 @@ const server = http.createServer((req, res) => {
                 }
               });
 
-              // 2. Nhận diện các luồng âm thanh rời (Audio Tracks: Lồng tiếng / Thuyết minh / Tiếng gốc)
+              // 2. Âm thanh (Audio Tracks)
               hlsInstance.on(Hls.Events.AUDIO_TRACKS_UPDATED, function () {
                 const tracks = hlsInstance.audioTracks;
                 if (tracks.length > 1) {
@@ -218,14 +229,14 @@ const server = http.createServer((req, res) => {
                     selector: audioOpts,
                     onSelect: function (item) {
                       hlsInstance.audioTrack = item.level;
-                      artInstance.notice.show = 'Đã đổi âm thanh: ' + item.html;
+                      artInstance.notice.show = 'Âm thanh: ' + item.html;
                       return item.html;
                     }
                   });
                 }
               });
 
-              // 3. Nhận diện phụ đề mềm từ luồng (HLS Subtitle Tracks)
+              // 3. Phụ đề mềm (Subtitles)
               hlsInstance.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, function () {
                 const subs = hlsInstance.subtitleTracks;
                 if (subs.length > 0) {
@@ -250,6 +261,7 @@ const server = http.createServer((req, res) => {
               });
 
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+              // Hỗ trợ native cho Apple Safari trên iOS / iPadOS / macOS
               video.src = src;
             }
           }
@@ -259,12 +271,14 @@ const server = http.createServer((req, res) => {
           type: 'vtt',
           style: {
             color: '#fff',
-            fontSize: '22px',
+            fontSize: '20px',
             textShadow: '0 0 4px #000, 0 0 4px #000'
           }
         },
         autoplay: true,
         autoSize: true,
+        autoOrientation: true, // Tự xoay ngang toàn màn hình trên điện thoại / tablet
+        lock: true,            // Khóa màn hình cảm ứng chống bấm nhầm trên mobile
         playbackRate: true,
         setting: true,
         hotkey: true,
@@ -323,6 +337,7 @@ const server = http.createServer((req, res) => {
       episodes.forEach((ep, idx) => {
         const btn = document.createElement('button');
         btn.className = 'ep-btn' + (idx === currentEpisodeIdx ? ' active' : '');
+        btn.tabIndex = 0;
         btn.innerText = ep.name;
         btn.onclick = () => selectEpisode(idx);
         grid.appendChild(btn);
@@ -342,6 +357,29 @@ const server = http.createServer((req, res) => {
       initArtplayer(url);
     }
 
+    // Hỗ trợ phím điều khiển Android TV Remote D-Pad
+    window.addEventListener('keydown', (e) => {
+      const code = e.keyCode || e.which;
+      if (!artInstance) return;
+
+      // 19: UP, 20: DOWN, 21: LEFT, 22: RIGHT, 23/66/13: CENTER/ENTER, 85/126: PLAY_PAUSE
+      if (code === 21) {
+        artInstance.seek = Math.max(0, artInstance.currentTime - 10);
+        artInstance.notice.show = 'Tua lùi -10s';
+      } else if (code === 22) {
+        artInstance.seek = Math.min(artInstance.duration, artInstance.currentTime + 10);
+        artInstance.notice.show = 'Tua tiến +10s';
+      } else if (code === 19) {
+        artInstance.volume = Math.min(1, artInstance.volume + 0.1);
+        artInstance.notice.show = 'Âm lượng: ' + Math.round(artInstance.volume * 100) + '%';
+      } else if (code === 20) {
+        artInstance.volume = Math.max(0, artInstance.volume - 0.1);
+        artInstance.notice.show = 'Âm lượng: ' + Math.round(artInstance.volume * 100) + '%';
+      } else if (code === 23 || code === 85 || code === 126) {
+        artInstance.toggle();
+      }
+    });
+
     switchSeries('gioi_mon_chi_ha');
   </script>
 </body>
@@ -352,5 +390,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`[OK] VietStream Hub Open Engine dang chay tai: http://localhost:${PORT}`);
+  console.log(`[OK] VietStream Hub Universal dang chay tai: http://localhost:${PORT}`);
 });
