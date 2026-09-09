@@ -1,4 +1,4 @@
-// ponytail: web player mã nguồn mở Artplayer + Hls.js hỗ trợ đa phân giải, đa âm thanh và phụ đề.
+// ponytail: web player mã nguồn mở Artplayer + Hls.js hỗ trợ đa phân giải, đa âm thanh và nạp phụ đề rời.
 const http = require('http');
 const { URL } = require('url');
 
@@ -77,15 +77,18 @@ const server = http.createServer((req, res) => {
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     body { background: #0b0f19; color: #f1f5f9; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-    header { background: #111827; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1f2937; gap: 12px; flex-wrap: wrap; }
+    header { background: #111827; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1f2937; gap: 10px; flex-wrap: wrap; }
     .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: #38bdf8; }
     .tabs { display: flex; gap: 6px; }
-    .tab-btn { background: #1f2937; color: #94a3b8; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .15s; }
+    .tab-btn { background: #1f2937; color: #94a3b8; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .15s; }
     .tab-btn:hover { color: #f1f5f9; background: #374151; }
     .tab-btn.active { background: #0284c7; color: #fff; font-weight: 600; }
-    .custom-input { display: flex; gap: 6px; flex: 1; max-width: 460px; }
-    .custom-input input { flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 6px 10px; color: #f8fafc; font-size: 12px; outline: none; }
+    .controls-bar { display: flex; gap: 6px; align-items: center; }
+    .custom-input { display: flex; gap: 4px; }
+    .custom-input input { width: 220px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 6px 10px; color: #f8fafc; font-size: 12px; outline: none; }
     .custom-input button { background: #059669; border: none; border-radius: 6px; color: white; padding: 6px 12px; font-size: 12px; cursor: pointer; font-weight: 600; }
+    .sub-btn { background: #475569; border: none; border-radius: 6px; color: white; padding: 6px 12px; font-size: 12px; cursor: pointer; font-weight: 600; }
+    .sub-btn:hover { background: #64748b; }
     .main { display: flex; flex: 1; height: calc(100vh - 54px); }
     .sidebar { width: 280px; background: #111827; border-right: 1px solid #1f2937; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
     .sidebar h2 { font-size: 12px; text-transform: uppercase; color: #64748b; margin-bottom: 8px; letter-spacing: 0.5px; }
@@ -107,9 +110,13 @@ const server = http.createServer((req, res) => {
       <button class="tab-btn" onclick="switchSeries('ban_gai_thien_tai')">Bạn Gái Thiên Tài</button>
       <button class="tab-btn" onclick="switchSeries('demo_multires')">Demo Multi-Res/Audio</button>
     </div>
-    <div class="custom-input">
-      <input id="custom-url" type="text" placeholder="Dán link m3u8 bất kỳ vào đây..." />
-      <button onclick="playCustomUrl()">Tải Stream</button>
+    <div class="controls-bar">
+      <input id="sub-file-input" type="file" accept=".vtt,.srt" style="display:none" onchange="handleSubFile(this)" />
+      <button class="sub-btn" onclick="document.getElementById('sub-file-input').click()">+ Nạp Sub Rời (.srt/.vtt)</button>
+      <div class="custom-input">
+        <input id="custom-url" type="text" placeholder="Dán link m3u8..." />
+        <button onclick="playCustomUrl()">Tải Stream</button>
+      </div>
     </div>
   </header>
   <div class="main">
@@ -153,7 +160,7 @@ const server = http.createServer((req, res) => {
               hlsInstance.loadSource(src);
               hlsInstance.attachMedia(video);
 
-              // 1. Nhận diện danh sách độ phân giải (Resolution / Quality)
+              // 1. Tự động nhận diện danh sách độ phân giải (Resolution / Quality Switcher)
               hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
                 const levels = hlsInstance.levels;
                 const badge = document.getElementById('quality-badge');
@@ -179,6 +186,7 @@ const server = http.createServer((req, res) => {
                     onSelect: function (item) {
                       hlsInstance.currentLevel = item.level;
                       badge.innerText = item.html;
+                      artInstance.notice.show = 'Đã đổi chất lượng: ' + item.html;
                       return item.html;
                     }
                   });
@@ -189,12 +197,12 @@ const server = http.createServer((req, res) => {
                     name: 'quality',
                     position: 'right',
                     html: '<span style="background:#0284c7;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700;">' + resText + '</span>',
-                    tooltip: 'Nguồn CDN: ' + resText
+                    tooltip: 'Nguồn CDN cố định: ' + resText
                   });
                 }
               });
 
-              // 2. Nhận diện các luồng âm thanh (Audio Tracks: Lồng tiếng / Thuyết minh / Gốc)
+              // 2. Nhận diện các luồng âm thanh rời (Audio Tracks: Lồng tiếng / Thuyết minh / Tiếng gốc)
               hlsInstance.on(Hls.Events.AUDIO_TRACKS_UPDATED, function () {
                 const tracks = hlsInstance.audioTracks;
                 if (tracks.length > 1) {
@@ -210,13 +218,14 @@ const server = http.createServer((req, res) => {
                     selector: audioOpts,
                     onSelect: function (item) {
                       hlsInstance.audioTrack = item.level;
+                      artInstance.notice.show = 'Đã đổi âm thanh: ' + item.html;
                       return item.html;
                     }
                   });
                 }
               });
 
-              // 3. Nhận diện phụ đề rời (Subtitle Tracks)
+              // 3. Nhận diện phụ đề mềm từ luồng (HLS Subtitle Tracks)
               hlsInstance.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, function () {
                 const subs = hlsInstance.subtitleTracks;
                 if (subs.length > 0) {
@@ -225,7 +234,7 @@ const server = http.createServer((req, res) => {
                     level: idx,
                     default: idx === hlsInstance.subtitleTrack
                   }));
-                  subOpts.unshift({ html: 'Tắt phụ đề', level: -1, default: hlsInstance.subtitleTrack === -1 });
+                  subOpts.unshift({ html: 'Tắt phụ đề mềm', level: -1, default: hlsInstance.subtitleTrack === -1 });
                   artInstance.controls.add({
                     name: 'subtitle',
                     position: 'right',
@@ -233,6 +242,7 @@ const server = http.createServer((req, res) => {
                     selector: subOpts,
                     onSelect: function (item) {
                       hlsInstance.subtitleTrack = item.level;
+                      artInstance.notice.show = 'Phụ đề: ' + item.html;
                       return item.html;
                     }
                   });
@@ -242,6 +252,15 @@ const server = http.createServer((req, res) => {
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
               video.src = src;
             }
+          }
+        },
+        subtitle: {
+          url: '',
+          type: 'vtt',
+          style: {
+            color: '#fff',
+            fontSize: '22px',
+            textShadow: '0 0 4px #000, 0 0 4px #000'
           }
         },
         autoplay: true,
@@ -262,6 +281,22 @@ const server = http.createServer((req, res) => {
           selectEpisode(currentEpisodeIdx + 1);
         }
       });
+    }
+
+    function handleSubFile(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const objectUrl = URL.createObjectURL(file);
+      const isSrt = file.name.toLowerCase().endsWith('.srt');
+
+      if (artInstance) {
+        artInstance.subtitle.switch(objectUrl, {
+          name: file.name,
+          type: isSrt ? 'srt' : 'vtt'
+        });
+        artInstance.subtitle.show = true;
+        artInstance.notice.show = 'Đã nạp phụ đề: ' + file.name;
+      }
     }
 
     function switchSeries(key) {
