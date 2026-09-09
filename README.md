@@ -25,13 +25,13 @@
 ### 1. Windows PC (1-Click Setup)
 Mở PowerShell và chạy lệnh sau để tự động tải cấu hình & đăng ký Stremio:
 ```powershell
-irm https://raw.githubusercontent.com/viet-stream/hub/main/scripts/setup.ps1 | iex
+irm https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/scripts/setup.ps1 | iex
 ```
 
 ### 2. macOS / Linux / Android Termux
 Mở Terminal và chạy:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/viet-stream/hub/main/scripts/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/scripts/setup.sh | bash
 ```
 
 ### 3. Cloudstream 3 (Android & Android TV)
@@ -39,13 +39,13 @@ curl -fsSL https://raw.githubusercontent.com/viet-stream/hub/main/scripts/setup.
 2. Mở ứng dụng → **Cài đặt** → **Tiện ích** → **Thêm kho lưu trữ**.
 3. Dán URL sau:
    ```text
-   https://raw.githubusercontent.com/viet-stream/hub/main/cloudstream/repo.json
+   https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/cloudstream/repo.json
    ```
 4. Bấm tải các tiện ích bạn muốn dùng.
 
 ### 4. Stremio (Mọi thiết bị)
 Bấm trực tiếp vào đường link sau nếu thiết bị đã cài Stremio:
-👉 [**Cài đặt Stremio Addon (viet-stream-hub)**](stremio://raw.githubusercontent.com/viet-stream/hub/main/stremio/manifest.json)
+👉 [**Cài đặt Stremio Addon (viet-stream-hub)**](stremio://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/stremio/manifest.json)
 
 ---
 

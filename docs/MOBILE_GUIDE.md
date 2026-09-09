@@ -12,7 +12,7 @@ Xem phim, anime, thể thao HD mượt mà, không quảng cáo trên smartphone
 2. Mở ứng dụng → Chọn **Cài đặt** (biểu tượng bánh răng) → **Tiện ích** (Extensions).
 3. Bấm **Thêm kho lưu trữ** (Add Repository) và dán URL:
    ```text
-   https://raw.githubusercontent.com/viet-stream/hub/main/cloudstream/repo.json
+   https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/cloudstream/repo.json
    ```
 4. Chọn danh sách plugin tiếng Việt muốn sử dụng và bấm **Cài đặt**.
 
@@ -20,7 +20,7 @@ Xem phim, anime, thể thao HD mượt mà, không quảng cáo trên smartphone
 1. Cài đặt Stremio từ [Google Play Store](https://play.google.com/store/apps/details?id=com.stremio.one).
 2. Nhấp vào liên kết 1-Click:
    ```text
-   stremio://raw.githubusercontent.com/viet-stream/hub/main/stremio/manifest.json
+   stremio://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/stremio/manifest.json
    ```
 3. Bấm **Install** khi ứng dụng hỏi xác nhận.
 
@@ -39,5 +39,5 @@ Hệ sinh thái Apple có giới hạn nghiêm ngặt với sideloading, giải 
    - Vào **Settings** → **Streaming** → Bật **Always start with external player** (chọn VLC hoặc Outplayer).
 6. Cài Addon `viet-stream-hub` bằng cách dán URL manifest vào ô tìm kiếm addon:
    ```text
-   https://raw.githubusercontent.com/viet-stream/hub/main/stremio/manifest.json
+   https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/stremio/manifest.json
    ```

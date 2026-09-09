@@ -20,7 +20,7 @@ Stremio có giao diện tối ưu 100% cho remote TV điều khiển từ xa.
 1. Mở Stremio trên điện thoại hoặc PC, đăng nhập tài khoản Stremio của bạn.
 2. Cài đặt Addon của `viet-stream-hub` bằng liên kết:
    ```text
-   stremio://raw.githubusercontent.com/viet-stream/hub/main/stremio/manifest.json
+   stremio://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/stremio/manifest.json
    ```
 3. Mở Stremio trên Android TV → Đăng nhập cùng tài khoản.
 4. Toàn bộ nguồn phim Việt, Thể thao và Anime sẽ tự động xuất hiện trên TV mà không cần gõ bàn phím remote.
@@ -42,5 +42,5 @@ Stremio có giao diện tối ưu 100% cho remote TV điều khiển từ xa.
 2. Chọn **Add Repository**.
 3. Nhập:
    - **Repository Name**: `Viet Stream Hub`
-   - **Repository URL**: `https://raw.githubusercontent.com/viet-stream/hub/main/cloudstream/repo.json`
+   - **Repository URL**: `https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/cloudstream/repo.json`
 4. Bấm **Download Plugins** → Bật toàn bộ các plugin: KKPhim, NguonC, ThapcamTV.
