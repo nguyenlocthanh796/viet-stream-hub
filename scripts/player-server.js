@@ -1,4 +1,4 @@
-// ponytail: web player mã nguồn mở Artplayer + Hls.js hỗ trợ chọn chất lượng đa phân giải.
+// ponytail: web player mã nguồn mở Artplayer + Hls.js hỗ trợ đa phân giải, đa âm thanh và phụ đề.
 const http = require('http');
 const { URL } = require('url');
 
@@ -54,9 +54,9 @@ const PLAYLIST = {
     ]
   },
   demo_multires: {
-    title: "Demo Đa Phân Giải (1080p · 720p · 480p · 360p)",
+    title: "Demo Đa Phân Giải / Audio (Tears of Steel)",
     episodes: [
-      { name: "Tears of Steel (Đa phân giải)", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" }
+      { name: "Tears of Steel (Multi-Res & Audio)", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" }
     ]
   }
 };
@@ -105,7 +105,7 @@ const server = http.createServer((req, res) => {
       <button class="tab-btn active" onclick="switchSeries('gioi_mon_chi_ha')">Giới Môn Chi Hạ</button>
       <button class="tab-btn" onclick="switchSeries('gia_thien')">Già Thiên</button>
       <button class="tab-btn" onclick="switchSeries('ban_gai_thien_tai')">Bạn Gái Thiên Tài</button>
-      <button class="tab-btn" onclick="switchSeries('demo_multires')">Demo Đa Phân Giải</button>
+      <button class="tab-btn" onclick="switchSeries('demo_multires')">Demo Multi-Res/Audio</button>
     </div>
     <div class="custom-input">
       <input id="custom-url" type="text" placeholder="Dán link m3u8 bất kỳ vào đây..." />
@@ -153,7 +153,7 @@ const server = http.createServer((req, res) => {
               hlsInstance.loadSource(src);
               hlsInstance.attachMedia(video);
 
-              // Tự động nhận diện danh sách độ phân giải từ manifest m3u8
+              // 1. Nhận diện danh sách độ phân giải (Resolution / Quality)
               hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
                 const levels = hlsInstance.levels;
                 const badge = document.getElementById('quality-badge');
@@ -171,7 +171,6 @@ const server = http.createServer((req, res) => {
                     default: true
                   });
 
-                  // Thêm menu Chất lượng vào thanh điều khiển
                   artInstance.controls.add({
                     name: 'quality',
                     position: 'right',
@@ -190,10 +189,56 @@ const server = http.createServer((req, res) => {
                     name: 'quality',
                     position: 'right',
                     html: '<span style="background:#0284c7;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700;">' + resText + '</span>',
-                    tooltip: 'Nguồn CDN cố định: ' + resText
+                    tooltip: 'Nguồn CDN: ' + resText
                   });
                 }
               });
+
+              // 2. Nhận diện các luồng âm thanh (Audio Tracks: Lồng tiếng / Thuyết minh / Gốc)
+              hlsInstance.on(Hls.Events.AUDIO_TRACKS_UPDATED, function () {
+                const tracks = hlsInstance.audioTracks;
+                if (tracks.length > 1) {
+                  const audioOpts = tracks.map((t, idx) => ({
+                    html: t.name || ('Audio ' + (idx + 1) + (t.lang ? ' [' + t.lang + ']' : '')),
+                    level: idx,
+                    default: idx === hlsInstance.audioTrack
+                  }));
+                  artInstance.controls.add({
+                    name: 'audio',
+                    position: 'right',
+                    html: 'Âm thanh',
+                    selector: audioOpts,
+                    onSelect: function (item) {
+                      hlsInstance.audioTrack = item.level;
+                      return item.html;
+                    }
+                  });
+                }
+              });
+
+              // 3. Nhận diện phụ đề rời (Subtitle Tracks)
+              hlsInstance.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, function () {
+                const subs = hlsInstance.subtitleTracks;
+                if (subs.length > 0) {
+                  const subOpts = subs.map((s, idx) => ({
+                    html: s.name || ('Phụ đề ' + (idx + 1) + (s.lang ? ' [' + s.lang + ']' : '')),
+                    level: idx,
+                    default: idx === hlsInstance.subtitleTrack
+                  }));
+                  subOpts.unshift({ html: 'Tắt phụ đề', level: -1, default: hlsInstance.subtitleTrack === -1 });
+                  artInstance.controls.add({
+                    name: 'subtitle',
+                    position: 'right',
+                    html: 'Phụ đề',
+                    selector: subOpts,
+                    onSelect: function (item) {
+                      hlsInstance.subtitleTrack = item.level;
+                      return item.html;
+                    }
+                  });
+                }
+              });
+
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
               video.src = src;
             }
