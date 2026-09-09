@@ -1,13 +1,12 @@
-// ponytail: web player mã nguồn mở Artplayer + Hls.js stream trực tiếp m3u8 không quảng cáo.
+// ponytail: web player mã nguồn mở Artplayer + Hls.js hỗ trợ chọn chất lượng đa phân giải.
 const http = require('http');
-const https = require('https');
 const { URL } = require('url');
 
 const PORT = 3333;
 
 const PLAYLIST = {
   gioi_mon_chi_ha: {
-    title: "Giới Môn Chi Hạ (13 Tập - Direct HLS yanhh3d)",
+    title: "Giới Môn Chi Hạ (13 Tập - yanhh3d)",
     episodes: [
       { name: "Tập 1", url: "https://v7.kkphimplayer7.com/20260805/5qkXPUrI/index.m3u8" },
       { name: "Tập 2", url: "https://v7.kkphimplayer7.com/20260805/ecMyxpXf/index.m3u8" },
@@ -25,7 +24,7 @@ const PLAYLIST = {
     ]
   },
   gia_thien: {
-    title: "Già Thiên (10 Tập - Direct HLS animesub)",
+    title: "Già Thiên (10 Tập - animesub)",
     episodes: [
       { name: "Tập 1", url: "https://s3.phim1280.tv/20240411/n2i5u9Ux/index.m3u8" },
       { name: "Tập 2", url: "https://s3.phim1280.tv/20240411/QR9inWeS/index.m3u8" },
@@ -40,7 +39,7 @@ const PLAYLIST = {
     ]
   },
   ban_gai_thien_tai: {
-    title: "Bạn Gái Thiên Tài (10 Tập - Direct HLS)",
+    title: "Bạn Gái Thiên Tài (10 Tập)",
     episodes: [
       { name: "Tập 1", url: "https://v7.kkphimplayer7.com/20260802/fbamEVcB/index.m3u8" },
       { name: "Tập 2", url: "https://v7.kkphimplayer7.com/20260802/S9PlBxvb/index.m3u8" },
@@ -52,6 +51,12 @@ const PLAYLIST = {
       { name: "Tập 8", url: "https://v7.kkphimplayer7.com/20260803/0QLNoCDk/index.m3u8" },
       { name: "Tập 9", url: "https://v7.kkphimplayer7.com/20260804/YK7VLYxY/index.m3u8" },
       { name: "Tập 10", url: "https://v7.kkphimplayer7.com/20260804/69WWc4R7/index.m3u8" }
+    ]
+  },
+  demo_multires: {
+    title: "Demo Đa Phân Giải (1080p · 720p · 480p · 360p)",
+    episodes: [
+      { name: "Tears of Steel (Đa phân giải)", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" }
     ]
   }
 };
@@ -66,19 +71,19 @@ const server = http.createServer((req, res) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VietStream Hub · Open Engine (0 Quảng Cáo)</title>
+  <title>VietStream Hub · Open Engine</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     body { background: #0b0f19; color: #f1f5f9; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
     header { background: #111827; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1f2937; gap: 12px; flex-wrap: wrap; }
-    .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: #38bdf8; letter-spacing: -0.5px; }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: #38bdf8; }
     .tabs { display: flex; gap: 6px; }
     .tab-btn { background: #1f2937; color: #94a3b8; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .15s; }
     .tab-btn:hover { color: #f1f5f9; background: #374151; }
     .tab-btn.active { background: #0284c7; color: #fff; font-weight: 600; }
-    .custom-input { display: flex; gap: 6px; flex: 1; max-width: 480px; }
+    .custom-input { display: flex; gap: 6px; flex: 1; max-width: 460px; }
     .custom-input input { flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 6px 10px; color: #f8fafc; font-size: 12px; outline: none; }
     .custom-input button { background: #059669; border: none; border-radius: 6px; color: white; padding: 6px 12px; font-size: 12px; cursor: pointer; font-weight: 600; }
     .main { display: flex; flex: 1; height: calc(100vh - 54px); }
@@ -90,16 +95,17 @@ const server = http.createServer((req, res) => {
     .ep-btn.active { background: #0284c7; border-color: #38bdf8; color: #fff; font-weight: 700; box-shadow: 0 0 10px rgba(2,132,199,0.5); }
     .player-container { flex: 1; background: #000; position: relative; display: flex; align-items: center; justify-content: center; }
     #artplayer-view { width: 100%; height: 100%; }
-    .engine-tag { position: absolute; top: 12px; right: 12px; background: rgba(15,23,42,0.85); backdrop-filter: blur(4px); border: 1px solid #334155; color: #38bdf8; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; pointer-events: none; z-index: 20; }
+    .quality-note { position: absolute; top: 12px; right: 12px; background: rgba(15,23,42,0.85); backdrop-filter: blur(4px); border: 1px solid #334155; color: #38bdf8; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; pointer-events: none; z-index: 20; }
   </style>
 </head>
 <body>
   <header>
     <div class="brand">VietStream · OpenEngine</div>
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchSeries('gioi_mon_chi_ha')">Giới Môn Chi Hạ (yanhh3d)</button>
-      <button class="tab-btn" onclick="switchSeries('gia_thien')">Già Thiên (animesub)</button>
+      <button class="tab-btn active" onclick="switchSeries('gioi_mon_chi_ha')">Giới Môn Chi Hạ</button>
+      <button class="tab-btn" onclick="switchSeries('gia_thien')">Già Thiên</button>
       <button class="tab-btn" onclick="switchSeries('ban_gai_thien_tai')">Bạn Gái Thiên Tài</button>
+      <button class="tab-btn" onclick="switchSeries('demo_multires')">Demo Đa Phân Giải</button>
     </div>
     <div class="custom-input">
       <input id="custom-url" type="text" placeholder="Dán link m3u8 bất kỳ vào đây..." />
@@ -112,7 +118,7 @@ const server = http.createServer((req, res) => {
       <div id="ep-grid" class="ep-grid"></div>
     </div>
     <div class="player-container">
-      <span id="engine-tag" class="engine-tag">Artplayer · Direct HLS</span>
+      <span id="quality-badge" class="quality-note">HLS Engine</span>
       <div id="artplayer-view"></div>
     </div>
   </div>
@@ -146,6 +152,48 @@ const server = http.createServer((req, res) => {
               });
               hlsInstance.loadSource(src);
               hlsInstance.attachMedia(video);
+
+              // Tự động nhận diện danh sách độ phân giải từ manifest m3u8
+              hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
+                const levels = hlsInstance.levels;
+                const badge = document.getElementById('quality-badge');
+
+                if (levels.length > 1) {
+                  badge.innerText = 'Đa phân giải (' + levels.length + ' mức)';
+                  const qualityOptions = levels.map((lvl, idx) => ({
+                    html: (lvl.height ? lvl.height + 'P' : Math.round(lvl.bitrate / 1000) + 'kbps'),
+                    level: idx,
+                    default: idx === hlsInstance.currentLevel
+                  }));
+                  qualityOptions.unshift({
+                    html: 'Tự động (Auto)',
+                    level: -1,
+                    default: true
+                  });
+
+                  // Thêm menu Chất lượng vào thanh điều khiển
+                  artInstance.controls.add({
+                    name: 'quality',
+                    position: 'right',
+                    html: 'Chất lượng',
+                    selector: qualityOptions,
+                    onSelect: function (item) {
+                      hlsInstance.currentLevel = item.level;
+                      badge.innerText = item.html;
+                      return item.html;
+                    }
+                  });
+                } else if (levels.length === 1) {
+                  const resText = (levels[0].height ? levels[0].height + 'P (FHD)' : '1080P (Gốc)');
+                  badge.innerText = 'Chất lượng: ' + resText;
+                  artInstance.controls.add({
+                    name: 'quality',
+                    position: 'right',
+                    html: '<span style="background:#0284c7;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700;">' + resText + '</span>',
+                    tooltip: 'Nguồn CDN cố định: ' + resText
+                  });
+                }
+              });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
               video.src = src;
             }
@@ -177,7 +225,8 @@ const server = http.createServer((req, res) => {
         b.classList.toggle('active', 
           (i === 0 && key === 'gioi_mon_chi_ha') ||
           (i === 1 && key === 'gia_thien') ||
-          (i === 2 && key === 'ban_gai_thien_tai')
+          (i === 2 && key === 'ban_gai_thien_tai') ||
+          (i === 3 && key === 'demo_multires')
         );
       });
 
