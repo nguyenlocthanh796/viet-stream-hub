@@ -31,7 +31,7 @@
       "name": "Stremio for Windows",
       "category": "desktop",
       "platforms": ["windows"],
-      "stable_url": "https://dl.strem.io/shell-win/v4.4.168/Stremio+Setup+4.4.168.exe",
+      "stable_url": "https://dl.strem.io/stremio-shell-ng/v5.0.24/StremioSetup-v5.0.24_x64.exe",
       "description": "Bản cài đặt Stremio chính thức cho máy tính Windows"
     }
   ]

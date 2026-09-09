@@ -34,7 +34,7 @@ if (-not $SkipAppInstall) {
     } else {
         Write-Host "    -> Stremio chua duoc cai dat. Dang tai ban cai dat chinh thuc..." -ForegroundColor Yellow
         $installerPath = Join-Path $env:TEMP "Stremio_Setup.exe"
-        curl.exe -L --progress-bar -o $installerPath "https://dl.strem.io/shell-win/v4.4.168/Stremio+Setup+4.4.168.exe"
+        curl.exe -L --progress-bar -o $installerPath "https://dl.strem.io/stremio-shell-ng/v5.0.24/StremioSetup-v5.0.24_x64.exe"
         Write-Host "    -> Dang khoi chay trinh cai dat Stremio..." -ForegroundColor Cyan
         Start-Process $installerPath
         Write-Host "    -> Vui long hoan tat cai dat Stremio tren man hinh..." -ForegroundColor Yellow
