@@ -1,0 +1,6 @@
+{
+  "name": "viet-stream-resolver",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js"
+}
