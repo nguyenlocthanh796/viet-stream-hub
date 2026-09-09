@@ -1,0 +1,41 @@
+name: DMCA / Content Takedown Request
+description: Request removal of an indexed source link or metadata
+title: "[DMCA]: "
+labels: ["dmca", "legal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **viet-stream-hub** does not host, upload, or store any media files. It only indexes publicly accessible metadata and web endpoints.
+        If you are a copyright owner or authorized representative and wish to request the removal of a specific provider or link from our index manifests, please complete this form.
+  - type: input
+    id: copyright_holder
+    attributes:
+      label: Copyright Holder / Authorized Entity
+      description: Name of the rights owner or authorized organization.
+      placeholder: e.g., Studio XYZ / Distribution Corp
+    validations:
+      required: true
+  - type: textarea
+    id: copyrighted_work
+    attributes:
+      label: Description of Protected Work
+      description: Identify the copyrighted work claimed to be infringed.
+    validations:
+      required: true
+  - type: textarea
+    id: urls_in_repo
+    attributes:
+      label: Location of Provider / Manifest Entry in viet-stream-hub
+      description: Exact file and line in this repository referencing the source (e.g., cloudstream/plugins.json#L15).
+    validations:
+      required: true
+  - type: checkboxes
+    id: statements
+    attributes:
+      label: Declarations
+      options:
+        - label: I have a good faith belief that use of the material is not authorized by the copyright owner, its agent, or the law.
+          required: true
+        - label: I confirm under penalty of perjury that the information provided is accurate and that I am authorized to act.
+          required: true

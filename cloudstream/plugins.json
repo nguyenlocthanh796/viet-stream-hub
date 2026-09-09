@@ -1,0 +1,62 @@
+[
+  {
+    "name": "OPhim Provider",
+    "internalName": "OPhimProvider",
+    "description": "Kho phim điện ảnh, phim bộ, anime Vietsub & Thuyết minh chất lượng cao từ OPhim API",
+    "version": 1,
+    "authors": ["VietStream Hub Community"],
+    "repositoryUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/cloudstream/plugins.json",
+    "tvTypes": ["Movie", "TvSeries", "Anime"],
+    "language": "vi",
+    "iconUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/docs/images/ophim_icon.png",
+    "status": "online"
+  },
+  {
+    "name": "KKPhim Provider",
+    "internalName": "KKPhimProvider",
+    "description": "Nguồn phim bom tấn Hollywood, phim chiếu rạp và series Châu Á từ PhimAPI",
+    "version": 1,
+    "authors": ["VietStream Hub Community"],
+    "repositoryUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/cloudstream/plugins.json",
+    "tvTypes": ["Movie", "TvSeries"],
+    "language": "vi",
+    "iconUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/docs/images/kkphim_icon.png",
+    "status": "online"
+  },
+  {
+    "name": "NguonC Provider",
+    "internalName": "NguonCProvider",
+    "description": "Nguồn phim dự phòng tốc độ cao nội địa, tải nhanh không giật lag từ NguonC API",
+    "version": 1,
+    "authors": ["VietStream Hub Community"],
+    "repositoryUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/cloudstream/plugins.json",
+    "tvTypes": ["Movie", "TvSeries"],
+    "language": "vi",
+    "iconUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/docs/images/nguonc_icon.png",
+    "status": "online"
+  },
+  {
+    "name": "AnimeVietsub Provider",
+    "internalName": "AnimeVietsubProvider",
+    "description": "Chuyên trang anime Nhật Bản trọn bộ, cập nhật tập mới nhanh nhất kèm Vietsub chuẩn",
+    "version": 1,
+    "authors": ["VietStream Hub Community"],
+    "repositoryUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/cloudstream/plugins.json",
+    "tvTypes": ["Anime"],
+    "language": "vi",
+    "iconUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/docs/images/anime_icon.png",
+    "status": "online"
+  },
+  {
+    "name": "ThapcamTV Sports",
+    "internalName": "ThapcamTVSports",
+    "description": "Trực tiếp bóng đá Ngoại hạng Anh, C1, La Liga, V-League bình luận tiếng Việt không quảng cáo",
+    "version": 1,
+    "authors": ["VietStream Hub Community"],
+    "repositoryUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/cloudstream/plugins.json",
+    "tvTypes": ["Live"],
+    "language": "vi",
+    "iconUrl": "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/docs/images/sports_icon.png",
+    "status": "online"
+  }
+]

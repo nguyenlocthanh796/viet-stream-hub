@@ -1,0 +1,19 @@
+name: Streaming Sources Healthcheck
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+jobs:
+  healthcheck:
+    name: Check Sources Latency & Uptime
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Sources Health Check
+        shell: pwsh
+        run: |
+          ./scripts/verify-sources.ps1

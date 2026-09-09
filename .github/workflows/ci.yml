@@ -1,0 +1,47 @@
+name: CI Quality Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-json:
+    name: Validate JSON Manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate JSON Files
+        run: |
+          for file in cloudstream/repo.json cloudstream/plugins.json stremio/manifest.json stremio/catalog.json apps.json; do
+            echo "Checking $file..."
+            jq . "$file" > /dev/null
+          done
+          echo "All JSON files are valid!"
+
+  lint-shell:
+    name: ShellCheck setup.sh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: 'scripts'
+
+  test-sources:
+    name: Verify Streaming Sources
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Sources Health Check
+        shell: pwsh
+        run: |
+          ./scripts/verify-sources.ps1

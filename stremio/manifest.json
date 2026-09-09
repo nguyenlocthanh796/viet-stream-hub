@@ -1,0 +1,56 @@
+{
+  "id": "community.vietstreamhub",
+  "version": "1.0.0",
+  "name": "VietStream Hub",
+  "description": "Kho phim 4K Vietsub, Thuyết minh & Trực tiếp bóng đá miễn phí cho Stremio",
+  "resources": [
+    "catalog",
+    "meta",
+    "stream",
+    "subtitles"
+  ],
+  "types": [
+    "movie",
+    "series",
+    "anime",
+    "tv"
+  ],
+  "catalogs": [
+    {
+      "type": "movie",
+      "id": "vietstream_movies",
+      "name": "Phim Mới Cập Nhật (Vietsub / Thuyết minh)",
+      "extra": [
+        { "name": "genre", "options": ["Hành Động", "Viễn Tưởng", "Kinh Dị", "Tình Cảm", "Hoạt Hình"] },
+        { "name": "skip" }
+      ]
+    },
+    {
+      "type": "series",
+      "id": "vietstream_series",
+      "name": "Phim Bộ & Drama Hot",
+      "extra": [
+        { "name": "genre", "options": ["Hàn Quốc", "Trung Quốc", "Âu Mỹ", "Anime"] },
+        { "name": "skip" }
+      ]
+    },
+    {
+      "type": "tv",
+      "id": "vietstream_live_sports",
+      "name": "Trực Tiếp Bóng Đá & Thể Thao",
+      "extra": [
+        { "name": "genre", "options": ["Ngoại Hạng Anh", "Champions League", "V-League", "La Liga"] }
+      ]
+    }
+  ],
+  "idPrefixes": [
+    "tt",
+    "ophim_",
+    "kkphim_",
+    "sport_"
+  ],
+  "behaviorHints": {
+    "configurable": false,
+    "configurationRequired": false
+  }
+}

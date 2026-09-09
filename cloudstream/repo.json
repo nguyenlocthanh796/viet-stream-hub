@@ -1,0 +1,8 @@
+{
+  "name": "VietStream Hub",
+  "description": "Kho phim 4K Vietsub, Thuyết minh & Thể thao trực tiếp miễn phí không quảng cáo cho người Việt",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/nguyenlocthanh796/viet-stream-hub/main/cloudstream/plugins.json"
+  ]
+}

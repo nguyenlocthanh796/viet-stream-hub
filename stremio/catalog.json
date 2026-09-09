@@ -1,0 +1,48 @@
+{
+  "updated_at": "2026-09-09T00:00:00Z",
+  "providers": [
+    {
+      "id": "ophim",
+      "name": "OPhim API",
+      "api_base": "https://ophim1.com",
+      "endpoints": {
+        "latest": "/danh-sach/phim-moi-cap-nhat",
+        "detail": "/phim/{slug}"
+      },
+      "media_type": ["movie", "series", "anime"],
+      "enabled": true
+    },
+    {
+      "id": "kkphim",
+      "name": "KKPhim / PhimAPI",
+      "api_base": "https://phimapi.com",
+      "endpoints": {
+        "latest": "/danh-sach/phim-moi-cap-nhat",
+        "detail": "/phim/{slug}"
+      },
+      "media_type": ["movie", "series"],
+      "enabled": true
+    },
+    {
+      "id": "nguonc",
+      "name": "NguonC API",
+      "api_base": "https://phim.nguonc.com",
+      "endpoints": {
+        "latest": "/api/films/phim-moi-cap-nhat",
+        "detail": "/api/film/{slug}"
+      },
+      "media_type": ["movie", "series"],
+      "enabled": true
+    },
+    {
+      "id": "thapcam",
+      "name": "Thapcam Live Sports",
+      "api_base": "https://api.thapcam.net",
+      "endpoints": {
+        "matches": "/api/matches/live"
+      },
+      "media_type": ["tv"],
+      "enabled": true
+    }
+  ]
+}

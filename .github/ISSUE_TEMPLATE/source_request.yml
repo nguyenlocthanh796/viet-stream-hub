@@ -1,0 +1,39 @@
+name: Source Request / Provider Suggestion
+description: Suggest a new Vietnamese streaming source or report broken providers
+title: "[Source]: "
+labels: ["provider", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggest an open, ad-free streaming API / provider for viet-stream-hub.
+  - type: input
+    id: provider_name
+    attributes:
+      label: Provider Name
+      placeholder: e.g., PhimMoi, Motchill, Vuighe
+    validations:
+      required: true
+  - type: input
+    id: provider_endpoint
+    attributes:
+      label: API Endpoint / Base URL
+      placeholder: https://api.example.com
+    validations:
+      required: true
+  - type: dropdown
+    id: media_type
+    attributes:
+      label: Content Category
+      options:
+        - Movies & TV Series
+        - Anime
+        - Live Sports / Football
+        - TV Channels (IPTV)
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes / Playback Stability
+      description: Latency, m3u8 direct streams, CORS, headers required?
